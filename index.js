@@ -36,6 +36,7 @@ app.get("/api/:date", (req, res) => {
   const numbersOnlyRegex = /^\d+$/;
 
   if (numbersOnlyRegex.test(apiCallParam)) {
+    const unix = Number(apiCallParam);
     const unixDate = new Date(Number(apiCallParam)).toString();
 
     if (unixDate === "Invalid Date") {
@@ -43,7 +44,7 @@ app.get("/api/:date", (req, res) => {
       res.end();
     }
 
-    res.json({ unix: apiCallParam, date: unixDate });
+    res.json({ unix: unix, date: unixDate });
     res.end();
   }
 });
