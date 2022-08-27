@@ -33,18 +33,39 @@ app.get("/api", (req, res) => {
 app.get("/api/:date", (req, res) => {
   const apiCallParam = req.params.date;
 
-  const numbersOnlyRegex = /^\d+$/;
+  const numberRegex = /^-\d+$/g;
+  const dateRegex = /^\d+-\d+-\d+$/g;
 
-  if (numbersOnlyRegex.test(apiCallParam)) {
+  //Serve unix format /api/<number>
+  if (numberRegex.test(apiCallParam)) {
     const unix = Number(apiCallParam);
     const unixDate = new Date(Number(apiCallParam)).toString();
 
     if (unixDate === "Invalid Date") {
-      res.json({ date: unixDate });
+      res.json({ error: "Invalid Date" });
+      res.end();
+    } else {
+      res.json({ unix: unix, date: unixDate });
       res.end();
     }
+  }
 
-    res.json({ unix: unix, date: unixDate });
+  //Serve date format /api/<year>-<month>-<day>
+  else if (dateRegex.test(apiCallParam)) {
+    const date = new Date(apiCallParam);
+    const dateAsString = date.toString();
+
+    const unixDate = date.getTime() / 1000;
+
+    if (dateAsString === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+      res.end();
+    } else {
+      res.json({ unix: unixDate, date: dateAsString });
+      res.end();
+    }
+  } else {
+    res.json({ error: "Invalid date" });
     res.end();
   }
 });
