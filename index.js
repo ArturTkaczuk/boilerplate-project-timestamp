@@ -28,7 +28,7 @@ app.get("/api", (req, res) => {
   const date = new Date();
   const dateUTC = date.toUTCString();
 
-  const unixDate = Math.floor(date.getTime() / 1000);
+  const unixDate = Math.floor(date.getTime());
 
   res.json({ unix: unixDate, utc: dateUTC });
 });
@@ -49,6 +49,8 @@ app.get("/api/:date", (req, res) => {
     res.end();
   };
 
+  console.log(apiCallParam);
+
   //Serve unix format /api/<number>
   if (numberRegex.test(apiCallParam)) {
     const unix = Number(apiCallParam);
@@ -64,7 +66,7 @@ app.get("/api/:date", (req, res) => {
   //Serve date format /api/<year>-<month>-<day>
   else if (dateRegex.test(apiCallParam)) {
     const date = new Date(apiCallParam);
-    const unix = date.getTime() / 1000;
+    const unix = date.getTime();
 
     if (date === "Invalid Date") {
       invalidDateResponse();
