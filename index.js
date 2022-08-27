@@ -31,11 +31,21 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/:date", (req, res) => {
-  const date = req.params.date || new Date(2020, 5, 19, 25, 65);
+  const apiCallParam = req.params.date;
 
-  console.log(date);
+  const numbersOnlyRegex = /^\d+$/;
 
-  res.json({ date: date });
+  if (numbersOnlyRegex.test(apiCallParam)) {
+    const unixDate = new Date(Number(apiCallParam)).toString();
+
+    if (unixDate === "Invalid Date") {
+      res.json({ date: unixDate });
+      res.end();
+    }
+
+    res.json({ unix: apiCallParam, date: unixDate });
+    res.end();
+  }
 });
 
 // listen for requests :)
