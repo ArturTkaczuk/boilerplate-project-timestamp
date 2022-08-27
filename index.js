@@ -63,8 +63,8 @@ app.get("/api/:date", (req, res) => {
   }
 
   //Serve date format /api/<year>-<month>-<day>
-  const unix = date.getTime();
   const date = new Date(apiCallParam);
+  const unix = date.getTime();
 
   if (date.toString() === "Invalid Date") {
     invalidDateResponse();
