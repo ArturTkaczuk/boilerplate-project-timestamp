@@ -26,11 +26,11 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api", (req, res) => {
   const date = new Date();
-  const dateAsString = date.toString();
+  const dateUTC = date.toUTCString();
 
   const unixDate = Math.floor(date.getTime() / 1000);
 
-  res.json({ unix: unixDate, utc: dateAsString });
+  res.json({ unix: unixDate, utc: dateUTC });
 });
 
 app.get("/api/:date", (req, res) => {
@@ -45,14 +45,14 @@ app.get("/api/:date", (req, res) => {
   };
 
   const dateResponse = (unix, date) => {
-    res.json({ unix, utc: date });
+    res.json({ unix, utc: date.toUTCString() });
     res.end();
   };
 
   //Serve unix format /api/<number>
   if (numberRegex.test(apiCallParam)) {
     const unix = Number(apiCallParam);
-    const date = new Date(Number(apiCallParam)).toString();
+    const date = new Date(Number(apiCallParam));
 
     if (date === "Invalid Date") {
       invalidDateResponse();
@@ -64,15 +64,17 @@ app.get("/api/:date", (req, res) => {
   //Serve date format /api/<year>-<month>-<day>
   else if (dateRegex.test(apiCallParam)) {
     const date = new Date(apiCallParam);
-    const dateAsString = date.toString();
     const unix = date.getTime() / 1000;
 
-    if (dateAsString === "Invalid Date") {
+    if (date === "Invalid Date") {
       invalidDateResponse();
     } else {
-      dateResponse(unix, dateAsString);
+      dateResponse(unix, date);
     }
-  } else {
+  }
+
+  //Serve invalid request
+  else {
     invalidDateResponse();
   }
 });
